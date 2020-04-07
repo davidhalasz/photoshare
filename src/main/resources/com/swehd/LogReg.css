@@ -1,0 +1,36 @@
+.regLogBox Text {
+    -fx-fill: white;
+    -fx-font-size: 22px;
+}
+
+.regLogBox TextField {
+    -fx-background-color: #444444;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+}
+
+.regLogBox PasswordField {
+    -fx-background-color: #444444;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+}
+
+.regLogBox .regLogButton, .backToLoginButton {
+    -fx-background-color: #444444;
+    -fx-border-color: white;
+    -fx-background-insets: 0,1,2;
+    -fx-background-radius: 3,2,1;
+    -fx-padding: 3 30 3 30;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+}
+
+.regLogBox .registerButton {
+    -fx-background-color: #4DE996;
+    -fx-border-color: white;
+    -fx-background-insets: 0,1,2;
+    -fx-background-radius: 3,2,1;
+    -fx-padding: 3 30 3 30;
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+}
