@@ -1,16 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
-<?import javafx.geometry.Insets?>
-
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.swehd.Controller">
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.swehd.Controller"
+          alignment="CENTER"  minWidth="400" minHeight="600" spacing="15"
+          style="-fx-background-color: #343434;">
     <children>
-        <Label text="Secondary View" />
-        <Button fx:id="secondaryButton" text="Switch to Primary View" onAction="#switchToPrimary" />
+        <Text text="REGISTER"
+              style="-fx-text-fill: #FFFFFF;
+            -fx-font-size: 22px;"/>
+        <TextField promptText="username" maxWidth="250"
+                   style="-fx-background-color: #444444;
+               -fx-width: 250; -fx-text-fill:
+               white; -fx-font-size: 15px;"/>
+        <TextField promptText="email" maxWidth="250"
+                   style="-fx-background-color: #444444;
+               -fx-width: 250; -fx-text-fill:
+               white; -fx-font-size: 15px;"/>
+        <PasswordField promptText="password" maxWidth="250"
+                       style="-fx-background-color: #444444;
+                   -fx-width: 250;
+                   -fx-text-fill: white;
+                   -fx-font-size: 15px;"/>
+        <Button text="Register"
+                style="-fx-background-color: #444444;
+            -fx-border-color: white;
+            -fx-background-insets: 0,1,2;
+            -fx-background-radius: 3,2,1;
+            -fx-padding: 3 30 3 30;
+            -fx-text-fill: white;
+            -fx-font-size: 15px;"/>
+        <Text text="or"
+              style="-fx-text-fill: #FFFFFF;
+            -fx-font-size: 15px;"/>
+        <Button fx:id="backToLoginButton" text="Back to login"  onAction="#switchToLogin"
+                style="-fx-background-color: #444444;
+            -fx-border-color: white;
+            -fx-background-insets: 0,1,2;
+            -fx-background-radius: 3,2,1;
+            -fx-padding: 3 30 3 30;
+            -fx-text-fill: white;
+            -fx-font-size: 15px;"/>
     </children>
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
+
 </VBox>

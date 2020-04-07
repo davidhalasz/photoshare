@@ -1,9 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.swehd.Controller"
+          alignment="CENTER"  minWidth="400" minHeight="600" spacing="15"
+          style="-fx-background-color: #343434;">
 
-<StackPane prefWidth="231.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.swehd.Controller">
+    <children>
+        <Text text="Log in"
+              style="-fx-text-fill: #FFFFFF;
+            -fx-font-size: 22px;"/>
+        <TextField promptText="username" maxWidth="250"
+                   style="-fx-background-color: #444444;
+               -fx-text-fill:
+               white; -fx-font-size: 15px;"/>
+        <PasswordField promptText="password" maxWidth="250"
+                       style="-fx-background-color: #444444;
+                   -fx-text-fill: white;
+                   -fx-font-size: 15px;"/>
+        <Button text="Login"
+                style="-fx-background-color: #444444;
+            -fx-border-color: white;
+            -fx-background-insets: 0,1,2;
+            -fx-background-radius: 3,2,1;
+            -fx-padding: 3 30 3 30;
+            -fx-text-fill: white;
+            -fx-font-size: 15px;"/>
+        <Text text="or"
+              style="-fx-text-fill: #FFFFFF;
+            -fx-font-size: 15px;"/>
+        <Button fx:id="registerButton" text="Register" onAction="#switchToRegister"
+                style="-fx-background-color: #4DE996;
+            -fx-border-color: white;
+            -fx-background-insets: 0,1,2;
+            -fx-background-radius: 3,2,1;
+            -fx-padding: 3 30 3 30;
+            -fx-text-fill: white;
+            -fx-font-size: 15px;"/>
+    </children>
 
-</StackPane>
+</VBox>
