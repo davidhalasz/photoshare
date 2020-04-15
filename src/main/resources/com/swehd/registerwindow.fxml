@@ -20,6 +20,5 @@
                 -fx-font-size: 15px;"/>
         <Button styleClass="backToLoginButton" text="Back to login"  onAction="#switchToLogin"/>
     </children>
-
-
+    
 </VBox>

@@ -13,13 +13,13 @@
 
     <children>
         <Text text="Log in"/>
-        <TextField promptText="username" maxWidth="250"/>
-        <PasswordField promptText="password" maxWidth="250"/>
-        <Button styleClass="regLogButton" text="Login"/>
+        <TextField fx:id="nameField" promptText="username" maxWidth="250"/>
+        <PasswordField fx:id="passwordField" promptText="password" maxWidth="250"/>
+        <Button fx:id="loginButton" styleClass="regLogButton" text="Login" onAction="#loginWindow"/>
         <Text text="or"
               style="-fx-fill: #FFFFFF;
             -fx-font-size: 15px;"/>
-        <Button styleClass="registerButton" text="Register" onAction="#switchToRegister"/>
+        <Button fx:id="switchToRegButton" styleClass="registerButton" text="Register" onAction="#loginWindow"/>
     </children>
 
 </VBox>
