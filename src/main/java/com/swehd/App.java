@@ -15,14 +15,10 @@ public class App extends Application {
 
     private static Scene scene;
 
-    /***
-     *
-     * @param stage
-     * @throws IOException
-     */
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"));
+        scene = new Scene(loadFXML("mainwindow"));
+
         stage.setScene(scene);
         stage.show();
     }
@@ -37,7 +33,6 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-
         launch();
     }
 

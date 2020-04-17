@@ -6,19 +6,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<VBox styleClass="regLogBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.swehd.Controller"
+<VBox styleClass="regLogBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.swehd.controller.Controller"
           alignment="CENTER"  minWidth="400" minHeight="600" spacing="15"
           style="-fx-background-color: #343434;" stylesheets="@LogReg.css">
     <children>
         <Text text="REGISTER"/>
-        <TextField promptText="username" maxWidth="250"/>
-        <TextField promptText="email" maxWidth="250"/>
-        <PasswordField promptText="password" maxWidth="250"/>
-        <Button styleClass="regLogButton" text="Register"/>
+        <TextField fx:id="regName" promptText="username" maxWidth="250"/>
+        <TextField fx:id="regEmail" promptText="email" maxWidth="250"/>
+        <PasswordField fx:id="regPass" promptText="password" maxWidth="250"/>
+        <Button fx:id="regButton" styleClass="regLogButton" text="Register" onAction="#registerWindow"/>
         <Text text="or"
               style="-fx-fill: #FFFFFF;
                 -fx-font-size: 15px;"/>
-        <Button styleClass="backToLoginButton" text="Back to login"  onAction="#switchToLogin"/>
+        <Button fx:id="switchToLoginButton" styleClass="backToLoginButton" text="Back to login"  onAction="#registerWindow"/>
     </children>
     
 </VBox>
