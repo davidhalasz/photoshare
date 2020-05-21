@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-
-<VBox styleClass="regLogBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.swehd.controller.Controller"
-          alignment="CENTER"  minWidth="400" minHeight="600" spacing="15"
-          style="-fx-background-color: #343434;" stylesheets="@LogReg.css">
+<VBox styleClass="regLogBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.swehd.controller.UserController"
+      alignment="CENTER" minWidth="400" minHeight="600" spacing="15"
+      style="-fx-background-color: #343434;" stylesheets="@LogReg.css">
     <children>
         <Text text="REGISTER"/>
         <TextField fx:id="regName" promptText="username" maxWidth="250"/>
         <TextField fx:id="regEmail" promptText="email" maxWidth="250"/>
         <PasswordField fx:id="regPass" promptText="password" maxWidth="250"/>
+        <Label fx:id="errorLabel" layoutX="223.0" layoutY="200.0" prefHeight="16.0" prefWidth="151.0" textFill="#e30e0e" />
         <Button fx:id="regButton" styleClass="regLogButton" text="Register" onAction="#registerWindow"/>
         <Text text="or"
               style="-fx-fill: #FFFFFF;
