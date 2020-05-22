@@ -31,10 +31,6 @@ public class UserDao extends GenericJpaDao<User> {
         } catch (NoResultException e) {
             return null;
         }
-
     }
 
-    public boolean exists(Object id) {
-        return getEntityManager().find(entityClass, id)!=null;
-    }
 }

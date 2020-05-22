@@ -1,4 +1,4 @@
-package com.swehd.post.model;
+package com.swehd.post;
 
 import com.swehd.user.User;
 import lombok.AllArgsConstructor;

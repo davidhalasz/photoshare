@@ -1,6 +1,6 @@
 package com.swehd.user;
 
-import com.swehd.post.model.Post;
+import com.swehd.post.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
