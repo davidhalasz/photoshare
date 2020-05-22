@@ -11,11 +11,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class UserController {
 
     private UserDao userDao;
+    public boolean checkUser;
 
+    @FXML
+    private Label errorLabel;
     @FXML
     private TextField nameField;
     @FXML
@@ -29,8 +33,27 @@ public class UserController {
     @FXML
     public void loginWindow(ActionEvent e) throws IOException {
         if (e.getSource().equals(loginButton)){
-            System.out.println("Your name is " + nameField.getText());
-            System.out.println("Your name password is " + passwordField.getText());
+            if (nameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
+                if (nameField.getText().isEmpty()) {
+                    errorLabel.setText("Username is empty!");
+                }
+                if (passwordField.getText().isEmpty()) {
+                    errorLabel.setText("Password is empty!");
+                }
+            } else {
+                if (!nameField.getText().isEmpty() && !passwordField.getText().isEmpty()){
+                    userDao = UserDao.getInstance();
+                    Optional<User> user = userDao.findUser(nameField.getText(), passwordField.getText());
+                    checkUser = false;
+
+                    if (user == null) {
+                        errorLabel.setText("Name and Password not accepted!");
+                    } else {
+                        System.out.println(user.get());
+                    }
+                }
+            }
+
         } else if (e.getSource().equals(switchToRegButton)) {
             App.setRoot("registerwindow");
         }
@@ -47,8 +70,7 @@ public class UserController {
     private Button regButton;
     @FXML
     private Button switchToLoginButton;
-    @FXML
-    private Label errorLabel;
+
 
     private User createUser() {
         User user = User.builder()
@@ -75,7 +97,7 @@ public class UserController {
             } else {
                 userDao = UserDao.getInstance();
                 userDao.persist(createUser());
-                System.out.println(createUser());
+                App.setRoot("loginwindow");
             }
 
         } else if (e.getSource().equals(switchToLoginButton)) {

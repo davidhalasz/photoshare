@@ -67,6 +67,7 @@ public abstract class GenericJpaDao<T> {
         return Optional.ofNullable(entityManager.find(entityClass, primaryKey));
     }
 
+
     /**
      * Returns the list of all instances of the entity class from the database.
      *
