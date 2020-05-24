@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class UserController {
 
@@ -95,6 +96,19 @@ public class UserController {
     @FXML
     private Button switchToLoginButton;
 
+    public static boolean isValid(String email)
+    {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
+    }
+
 
     private User createUser() {
         User user = User.builder()
@@ -114,7 +128,7 @@ public class UserController {
     public void registerWindow(ActionEvent e) throws IOException {
 
         if (e.getSource().equals(regButton)){
-            if (regName.getText().isEmpty() || regEmail.getText().isEmpty() || regPass.getText().isEmpty()) {
+            if (regName.getText().isEmpty() || regEmail.getText().isEmpty() || regPass.getText().isEmpty()){
                 if (regName.getText().isEmpty()) {
                     errorLabel.setText("Username is empty!");
                 } else if (regEmail.getText().isEmpty()) {

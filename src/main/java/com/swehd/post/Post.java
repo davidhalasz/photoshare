@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 public class Post {
+
     @Id
     @GeneratedValue
     private long pid;

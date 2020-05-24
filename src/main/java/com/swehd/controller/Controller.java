@@ -1,22 +1,27 @@
 package com.swehd.controller;
 
+import com.swehd.App;
 import com.swehd.post.Post;
 import com.swehd.post.PostDao;
 import com.swehd.user.User;
-import com.swehd.user.UserDao;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.swing.text.html.ImageView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,7 +32,6 @@ import java.util.List;
 public class Controller{
     public long id;
     private PostDao postDao;
-    private UserDao userDao;
 
     /**
      * Get Current User's ID
@@ -38,27 +42,131 @@ public class Controller{
         System.out.println("Current user ID is: " + this.id);
     }
 
+    @FXML
+    private SplitPane sp;
 
     @FXML
-    private AnchorPane postWall;
+    private DialogPane dialogContent;
+
     @FXML
-    private ImageView pimage;
+    private TableView<Post> postWall;
+
     @FXML
-    private Label pname;
+    private TableColumn<Post, String> picture;
+
     @FXML
-    private Label pdescription;
+    private TableColumn<Post, String> description;
+
+    @FXML
+    private TableColumn<Post, String> editButton;
 
 
+    /**
+     * Display images in picture cell.
+     * Show edit buttons in editButton cell. After clicking show a dialog window with selected description to edit.
+     */
 
+    @FXML
     public void initialize() {
         postDao = PostDao.getInstance();
+        List<Post> postList = postDao.findAllPost();
 
-        List<Post> postWall = postDao.findAll();
-        pdescription.setLabelFor(new PropertyValueFactory<>("description"));
-        
+        picture.setCellValueFactory(new PropertyValueFactory<>("picture"));
+        description.setCellValueFactory(new PropertyValueFactory<>("description"));
+        editButton.setCellValueFactory(new PropertyValueFactory<>("dummy"));
 
+
+        picture.setCellFactory(column -> {
+            TableCell<Post, String> cell = new TableCell<Post, String>() {
+                ImageView imageView = new ImageView();
+
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if(empty) {
+                        setText(null);
+                        setGraphic(null);
+                    }
+                    else {
+                        imageView.setFitHeight(50);
+                        imageView.setPreserveRatio(true);
+                        imageView.setImage(new Image(getClass().getResource("/pictures/" + item).toExternalForm()));
+
+                        setGraphic(imageView);
+                    }
+                }
+            };
+            return cell;
+        });
+
+        editButton.setCellFactory(column -> {
+            TableCell<Post, String> cell = new TableCell<Post, String>() {
+                final Button btn = new Button("Edit");
+
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        btn.setOnAction(event -> {
+
+                            try {
+                                Post post = getTableView().getItems().get(getIndex());
+                                FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("editwindow.fxml"));
+                                Parent root = fxmlLoader.load();
+                                fxmlLoader.<EditController>getController().initPost(post.getPid(), post.getDescription());
+                                Stage stage = new Stage();
+                                stage.setScene(new Scene(root));
+                                stage.show();
+                               ((Node) event.getSource()).getScene().getWindow();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        });
+                        setGraphic(btn);
+                        setText(null);
+
+                    }
+//                        Dialog<ButtonType> dialog = new Dialog<>();
+//                        dialog.initOwner(sp.getScene().getWindow());
+//                        dialog.setTitle("Edit your photo description");
+//                        btn.setOnAction(event -> {
+//                            Post post = getTableView().getItems().get(getIndex());
+//
+//                            try {
+//                                FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("editdialog.fxml"));
+//                                Parent root = fxmlLoader.load();
+//                                fxmlLoader.<DialogController>getController().initPost(post.getPid(), post.getDescription());
+//
+//                                dialog.getDialogPane().setContent(root);
+//                            } catch (IOException ex) {
+//                                ex.printStackTrace();
+//                            }
+//                            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+//                            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+//
+//                            Optional<ButtonType> result = dialog.showAndWait();
+//                            if(result.isPresent() && result.get() == ButtonType.OK) {
+//
+//                            }
+//
+//                        });
+//                        setGraphic(btn);
+//                        setText(null);
+//                    }
+                }
+            };
+            return cell;
+        });
+
+        ObservableList<Post> observableResult = FXCollections.observableArrayList();
+        observableResult.addAll(postList);
+
+        postWall.setItems(observableResult);
     }
-
 
 
     @FXML
@@ -72,15 +180,17 @@ public class Controller{
     private String path;
 
     public void initFile(String selectedFile) {
+
         this.filename = selectedFile;
     }
 
     public void absolutePath(String path) {
+
         this.path = path;
     }
 
     /**
-     * A Post builder. Get user's id from database. Set description and picture's name.
+     * A Post builder. Get logged user's id. Set description and picture's name.
      * @return
      */
     private Post createPost() {

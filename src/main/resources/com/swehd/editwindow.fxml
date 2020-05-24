@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<VBox styleClass="regLogBox" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.swehd.controller.EditController"
+      alignment="CENTER" minWidth="400" minHeight="600" spacing="15"
+      style="-fx-background-color: #343434;" stylesheets="@LogReg.css">
+    <children>
+        <Text text="EDIT YOUR POST"/>
+
+        <TextArea fx:id="editdescription" maxWidth="300" minHeight="300"/>
+        <Label fx:id="errorLabel" layoutX="223.0" layoutY="200.0" prefHeight="16.0" prefWidth="151.0" textFill="#e30e0e" />
+        <Button fx:id="saveBtn" styleClass="regLogButton" text="Save" onAction="#editWindow"/>
+        <Button fx:id="backBtn" styleClass="regLogButton" text="Cancel" onAction="#editWindow"/>
+        <Button fx:id="deleteBtn" styleClass="delButton" text="Delete Post"  onAction="#editWindow"/>
+    </children>
+
+</VBox>
