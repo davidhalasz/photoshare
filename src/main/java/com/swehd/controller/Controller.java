@@ -19,9 +19,6 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,23 +27,17 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 
 public class Controller{
-    public long id;
+    private User user;
     private PostDao postDao;
 
     /**
-     * Get Current User's ID
-     * @param id
+     * Get Current User
+     * @param user
      */
-    public void initdata(Long id) {
-        this.id = id;
-        System.out.println("Current user ID is: " + this.id);
+    public void initdata(User user) {
+        this.user = user;
     }
 
-    @FXML
-    private SplitPane sp;
-
-    @FXML
-    private DialogPane dialogContent;
 
     @FXML
     private TableView<Post> postWall;
@@ -80,6 +71,11 @@ public class Controller{
             TableCell<Post, String> cell = new TableCell<Post, String>() {
                 ImageView imageView = new ImageView();
 
+                /**
+                 * Show posted images.
+                 * @param item
+                 * @param empty
+                 */
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -89,7 +85,7 @@ public class Controller{
                         setGraphic(null);
                     }
                     else {
-                        imageView.setFitHeight(50);
+                        imageView.setFitHeight(150);
                         imageView.setPreserveRatio(true);
                         imageView.setImage(new Image(getClass().getResource("/pictures/" + item).toExternalForm()));
 
@@ -101,9 +97,15 @@ public class Controller{
         });
 
         editButton.setCellFactory(column -> {
-            TableCell<Post, String> cell = new TableCell<Post, String>() {
+            TableCell<Post, String> cell = new TableCell<>() {
                 final Button btn = new Button("Edit");
 
+                /**
+                 * If User's id equal to post's user id, then show edit button.
+                 * Show an edit window after clicking edit button.
+                 * @param item
+                 * @param empty
+                 */
                 @Override
                 public void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -119,45 +121,24 @@ public class Controller{
                                 Parent root = fxmlLoader.load();
                                 fxmlLoader.<EditController>getController().initPost(post.getPid(), post.getDescription());
                                 Stage stage = new Stage();
+                                stage.setTitle("Edit your post");
                                 stage.setScene(new Scene(root));
-                                stage.show();
+                                stage.showAndWait();
+                                initialize();
                                ((Node) event.getSource()).getScene().getWindow();
+
                             } catch (IOException ex) {
                                 ex.printStackTrace();
                             }
                         });
-                        setGraphic(btn);
-                        setText(null);
-
+                        Post post = getTableView().getItems().get(getIndex());
+                        if (user.getId() == post.getUser().getId()) {
+                            setGraphic(btn);
+                            setText(null);
+                        }
                     }
-//                        Dialog<ButtonType> dialog = new Dialog<>();
-//                        dialog.initOwner(sp.getScene().getWindow());
-//                        dialog.setTitle("Edit your photo description");
-//                        btn.setOnAction(event -> {
-//                            Post post = getTableView().getItems().get(getIndex());
-//
-//                            try {
-//                                FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("editdialog.fxml"));
-//                                Parent root = fxmlLoader.load();
-//                                fxmlLoader.<DialogController>getController().initPost(post.getPid(), post.getDescription());
-//
-//                                dialog.getDialogPane().setContent(root);
-//                            } catch (IOException ex) {
-//                                ex.printStackTrace();
-//                            }
-//                            dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
-//                            dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-//
-//                            Optional<ButtonType> result = dialog.showAndWait();
-//                            if(result.isPresent() && result.get() == ButtonType.OK) {
-//
-//                            }
-//
-//                        });
-//                        setGraphic(btn);
-//                        setText(null);
-//                    }
                 }
+
             };
             return cell;
         });
@@ -167,6 +148,7 @@ public class Controller{
 
         postWall.setItems(observableResult);
     }
+
 
 
     @FXML
@@ -190,29 +172,22 @@ public class Controller{
     }
 
     /**
-     * A Post builder. Get logged user's id. Set description and picture's name.
+     * Returns a created post.
      * @return
      */
-    private Post createPost() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("post-mysql");
-        EntityManager em = emf.createEntityManager();
-        em.getTransaction().begin();
-
-
+    public Post createPost() {
         Post post = Post.builder()
                 .description(postDesc.getText().trim())
                 .picture(filename)
-                .user(em.find(User.class, this.id))
+                .user(user)
                 .build();
 
-        em.close();
-        emf.close();
         return post;
     }
 
     /**
-     * Get selected picture's filename and description.
-     * Save to database these data after clicking sendPostBtn.
+     * Get the selected picture's filename and description.
+     * Save to database after clicking sendPostBtn.
      * @param e
      * @throws IOException
      */
@@ -236,6 +211,7 @@ public class Controller{
             if (postDesc.getText() != null && filename != null) {
                 postDao = PostDao.getInstance();
                 postDao.persist(createPost());
+                initialize();
 
                 File folder = new File("src/main/resources/pictures");
                 boolean success = folder.mkdir();

@@ -22,11 +22,20 @@ public class PostDao extends GenericJpaDao<Post> {
         return instance;
     }
 
+    /**
+     * Returns the list of all post from the database.
+     * @return
+     */
     public List<Post> findAllPost() {
         return entityManager.createQuery("SELECT p FROM Post p", Post.class)
                 .getResultList();
     }
 
+    /**
+     * Returns a post with the specified id from the database.
+     * @param pid
+     * @return
+     */
     public Optional<Post> findPost(long pid) {
         try {
             return Optional.ofNullable(entityManager.createQuery("SELECT p FROM Post p WHERE p.pid = :pid", Post.class)

@@ -83,7 +83,7 @@ public abstract class GenericJpaDao<T> {
      *
      * @param entity the entity instance to be removed from the database
      */
-    public void remove(Optional<T> entity) {
+    public void remove(T entity) {
         entityManager.getTransaction().begin();
         entityManager.remove(entity);
         entityManager.getTransaction().commit();

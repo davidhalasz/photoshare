@@ -22,6 +22,12 @@ public class UserDao extends GenericJpaDao<User> {
         return instance;
     }
 
+    /**
+     * Returns a User with the specified name and password from the database.
+     * @param name
+     * @param password
+     * @return
+     */
     public Optional<User> findUser(String name, String password) {
         try {
             return Optional.ofNullable(entityManager.createQuery("SELECT u FROM User u WHERE u.name = :name AND u.password = :password", User.class)

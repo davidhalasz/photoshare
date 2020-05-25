@@ -11,7 +11,7 @@
         <TextField fx:id="regName" promptText="username" maxWidth="250"/>
         <TextField fx:id="regEmail" promptText="email" maxWidth="250"/>
         <PasswordField fx:id="regPass" promptText="password" maxWidth="250"/>
-        <Label fx:id="errorLabel" layoutX="223.0" layoutY="200.0" prefHeight="16.0" prefWidth="151.0" textFill="#e30e0e" />
+        <Label fx:id="errorLabel" layoutX="223.0" layoutY="200.0" prefHeight="16.0" prefWidth="220.0" textFill="#e30e0e" />
         <Button fx:id="regButton" styleClass="regLogButton" text="Register" onAction="#registerWindow"/>
         <Text text="or"
               style="-fx-fill: #FFFFFF;
