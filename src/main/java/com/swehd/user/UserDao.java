@@ -24,9 +24,9 @@ public class UserDao extends GenericJpaDao<User> {
 
     /**
      * Returns a User with the specified name and password from the database.
-     * @param name
-     * @param password
-     * @return
+     * @param name the name of the user.
+     * @param password password of the user.
+     * @return the searched user.
      */
     public Optional<User> findUser(String name, String password) {
         try {

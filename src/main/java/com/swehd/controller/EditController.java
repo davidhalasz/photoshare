@@ -8,10 +8,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.util.Optional;
 
+@Slf4j
 public class EditController{
     private PostDao postDao;
 
@@ -27,28 +28,27 @@ public class EditController{
     private Label errorLabel;
 
     private long pid;
-    private String Description;
+    private String description;
 
     /**
      * Get selected post's id and description to edit.
-     * @param pid
-     * @param description
+     * @param pid the post's id.
+     * @param description the post's description.
      */
     @FXML
     public void initPost(long pid, String description)  {
         this.pid = pid;
-        this.Description= description;
+        this.description = description;
         editdescription.setText(description);
     }
 
     /**
      * Update post or delete it.
-     * @param e
-     * @throws IOException
+     * @param e button event.
      */
     @FXML
-    public void editWindow(ActionEvent e) throws IOException{
-        if (e.getSource().equals(saveBtn)){
+    public void editWindow(ActionEvent e) {
+        if (e.getSource().equals(saveBtn)) {
             if (editdescription.getText().isEmpty()) {
                 errorLabel.setText("Text is empty!");
             } else {
@@ -61,6 +61,7 @@ public class EditController{
                 postDao.update(editpost);
                 Stage stage = (Stage) saveBtn.getScene().getWindow();
                 stage.close();
+                log.info("User edited the post.");
 
             }
         } else if (e.getSource().equals(backBtn)) {
@@ -72,6 +73,7 @@ public class EditController{
             postDao.remove(post.get());
             Stage stage = (Stage) deleteBtn.getScene().getWindow();
             stage.close();
+            log.info("User deleted the post.");
         }
 
     }

@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,18 +27,18 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
-public class Controller{
+@Slf4j
+public class Controller {
     private User user;
     private PostDao postDao;
 
     /**
-     * Get Current User
+     * Get Current User.
      * @param user
      */
     public void initdata(User user) {
         this.user = user;
     }
-
 
     @FXML
     private TableView<Post> postWall;
@@ -54,7 +55,8 @@ public class Controller{
 
     /**
      * Display images in picture cell.
-     * Show edit buttons in editButton cell. After clicking show a dialog window with selected description to edit.
+     * Show edit buttons in editButton cell.
+     * After clicking show a dialog window with selected description to edit.
      */
 
     @FXML
@@ -80,15 +82,13 @@ public class Controller{
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
 
-                    if(empty) {
+                    if (empty) {
                         setText(null);
                         setGraphic(null);
-                    }
-                    else {
+                    } else {
                         imageView.setFitHeight(150);
                         imageView.setPreserveRatio(true);
                         imageView.setImage(new Image(getClass().getResource("/pictures/" + item).toExternalForm()));
-
                         setGraphic(imageView);
                     }
                 }
@@ -98,7 +98,7 @@ public class Controller{
 
         editButton.setCellFactory(column -> {
             TableCell<Post, String> cell = new TableCell<>() {
-                final Button btn = new Button("Edit");
+                private Button btn = new Button("Edit");
 
                 /**
                  * If User's id equal to post's user id, then show edit button.
@@ -123,9 +123,9 @@ public class Controller{
                                 Stage stage = new Stage();
                                 stage.setTitle("Edit your post");
                                 stage.setScene(new Scene(root));
+                                ((Node) event.getSource()).getScene().getWindow();
                                 stage.showAndWait();
                                 initialize();
-                               ((Node) event.getSource()).getScene().getWindow();
 
                             } catch (IOException ex) {
                                 ex.printStackTrace();
@@ -138,7 +138,6 @@ public class Controller{
                         }
                     }
                 }
-
             };
             return cell;
         });
@@ -157,17 +156,17 @@ public class Controller{
     private Button sendPostBtn;
     @FXML
     private TextArea postDesc;
+    @FXML
+    private Label errorLabelPic;
 
     private String filename;
     private String path;
 
     public void initFile(String selectedFile) {
-
         this.filename = selectedFile;
     }
 
     public void absolutePath(String path) {
-
         this.path = path;
     }
 
@@ -177,11 +176,10 @@ public class Controller{
      */
     public Post createPost() {
         Post post = Post.builder()
-                .description(postDesc.getText().trim())
+                .description(postDesc.getText())
                 .picture(filename)
                 .user(user)
                 .build();
-
         return post;
     }
 
@@ -212,9 +210,10 @@ public class Controller{
                 postDao = PostDao.getInstance();
                 postDao.persist(createPost());
                 initialize();
+                log.info("User created a post and refreshed table.");
+
 
                 File folder = new File("src/main/resources/pictures");
-                boolean success = folder.mkdir();
                 String destination = folder.getAbsolutePath() + File.separator + filename;
 
                 try {
@@ -226,15 +225,14 @@ public class Controller{
                     // Close
                     source.close();
                     dest.close();
-
-                    System.out.println("Done");
+                    log.info("User selected a picture.");
 
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
 
             } else {
-                System.out.println("Empty");
+                errorLabelPic.setText("Please, choose a Picture!");
             }
         }
     }

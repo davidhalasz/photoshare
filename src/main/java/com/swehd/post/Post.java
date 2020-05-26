@@ -23,13 +23,22 @@ public class Post {
     @ManyToOne(optional = false)
     private User user;
 
-    @Column(nullable=false)
+    /**
+     *The name of the file.
+     */
+    @Column(nullable = false)
     private String picture;
 
-    @Column(nullable=false)
+    /**
+     * The post's description text.
+     */
+    @Column(nullable = false)
     private String description;
 
-    @Column(nullable=false)
+    /**
+     * Date time when the post was created.
+     */
+    @Column(nullable = false)
     private LocalDateTime created;
 
     @PrePersist

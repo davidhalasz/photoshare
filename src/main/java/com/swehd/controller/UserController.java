@@ -14,11 +14,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
+import static com.swehd.user.UserService.isValid;
+import static com.swehd.user.UserService.shortThanThree;
+
+@Slf4j
 public class UserController {
 
     private UserDao userDao;
@@ -43,7 +47,7 @@ public class UserController {
      */
     @FXML
     public void loginWindow(ActionEvent e) throws IOException {
-        if (e.getSource().equals(loginButton)){
+        if (e.getSource().equals(loginButton)) {
             if (nameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
                 if (nameField.getText().isEmpty()) {
                     errorLabel.setText("Username is empty!");
@@ -52,7 +56,7 @@ public class UserController {
                     errorLabel.setText("Password is empty!");
                 }
             } else {
-                if (!nameField.getText().isEmpty() && !passwordField.getText().isEmpty()){
+                if (!nameField.getText().isEmpty() && !passwordField.getText().isEmpty()) {
                     userDao = UserDao.getInstance();
                     Optional<User> user = userDao.findUser(nameField.getText(), passwordField.getText());
 
@@ -62,7 +66,7 @@ public class UserController {
                         User loggedUser = user.get();
                         loggedUser.setLogged(true);
                         userDao.update(loggedUser);
-
+                        log.info("User is logged.");
                         try {
                             FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("mainwindow.fxml"));
                             Parent root = fxmlLoader.load();
@@ -96,26 +100,6 @@ public class UserController {
     @FXML
     private Button switchToLoginButton;
 
-
-    /**
-     * Check if email address valid or no.
-     * @param email
-     * @return
-     */
-    public static boolean isValid(String email)
-    {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
-
-        Pattern pat = Pattern.compile(emailRegex);
-        if (email == null)
-            return false;
-        return pat.matcher(email).matches();
-    }
-
-
     private User createUser() {
         User user = User.builder()
                 .name(regName.getText())
@@ -137,23 +121,30 @@ public class UserController {
         if (e.getSource().equals(regButton)) {
             if (regName.getText().isEmpty() || regEmail.getText().isEmpty() || regPass.getText().isEmpty()) {
                 if (regName.getText().isEmpty()) {
-                    errorLabel.setText("Username is empty!");
+                    errorLabel.setText("Username cannot be empty!");
+                    throw new IllegalArgumentException("Username cannot be empty!");
                 } else if (regEmail.getText().isEmpty()) {
-                    errorLabel.setText("Email is empty!");
+                    errorLabel.setText("Email address cannot be empty!");
+                    throw new IllegalArgumentException("Email address cannot be empty!");
                 } else if (regPass.getText().isEmpty()) {
-                    errorLabel.setText("Username is empty!");
+                    errorLabel.setText("Password cannot be empty!");
+                    throw new IllegalArgumentException("Password cannot be empty!");
                 }
-            } else if(regName.getText().length() < 3) {
+            } else if (shortThanThree(regName.getText())) {
                 errorLabel.setText("Username is too short!");
+                throw new IllegalArgumentException("Username is too short!");
             } else if (isValid(regEmail.getText().trim())) {
                     userDao = UserDao.getInstance();
                     userDao.persist(createUser());
                     App.setRoot("loginwindow");
+                    log.info("User ( {} ) registered.", regName.getText());
                 } else {
                     errorLabel.setText("This is not a valid email address!");
-            }
+                    throw new IllegalArgumentException("Password cannot be empty!");
+                }
         } else if (e.getSource().equals(switchToLoginButton)) {
             App.setRoot("loginwindow");
+            log.info("Switch to Login Window");
         }
     }
 }

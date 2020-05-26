@@ -22,15 +22,27 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
-    @Column(nullable=false)
+    /**
+     * The name of the user
+     */
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable=false)
+    /**
+     * The user's email.
+     */
+    @Column(nullable = false)
     private String email;
 
-    @Column(nullable=false)
+    /**
+     * The user's password.
+     */
+    @Column(nullable = false)
     private String password;
 
+    /**
+     * The user's status. If the user is logged: true.
+     */
     @Column(nullable = false)
     private boolean logged;
 
