@@ -24,14 +24,14 @@ public class UserServiceTest {
     @Test
     void nameLengthGood() {
         String name = "username";
-        boolean result = UserService.shortThanThree(name);
+        boolean result = UserService.longerThanThree(name);
         assertTrue(result);
     }
 
     @Test
     void nameLengthBad() {
         String name = "u";
-        boolean result = UserService.shortThanThree(name);
+        boolean result = UserService.longerThanThree(name);
         assertFalse(result);
     }
 
@@ -40,9 +40,5 @@ public class UserServiceTest {
         User user = new User();
         user.setName("mouse");
         user.setEmail("mouse@email.com");
-
-
-
-
     }
 }

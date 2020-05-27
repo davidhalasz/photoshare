@@ -20,9 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.Optional;
 
-import static com.swehd.user.UserService.isValid;
-import static com.swehd.user.UserService.shortThanThree;
-import static com.swehd.user.UserService.checkIfExists;
+import static com.swehd.user.UserService.*;
 
 @Slf4j
 public class UserController {
@@ -117,8 +115,8 @@ public class UserController {
     }
 
     /**
-     * Register new user. Display error if any fields in a form are empty.
-     * Check if email address valid or no.
+     * Creates a new User. Display error if any fields in a form are empty.
+     * Checks if email address valid or no.
      * @param e
      * @throws IOException
      */
@@ -137,7 +135,7 @@ public class UserController {
                     errorLabel.setText("Password cannot be empty!");
                     throw new IllegalArgumentException("Password cannot be empty!");
                 }
-            } else if (!shortThanThree(regName.getText())) {
+            } else if (!longerThanThree(regName.getText())) {
                 errorLabel.setText("Username is too short!");
                 throw new IllegalArgumentException("Username is too short!");
             } else if (isValid(regEmail.getText().trim())) {

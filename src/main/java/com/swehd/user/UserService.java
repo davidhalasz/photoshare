@@ -27,7 +27,7 @@ public class UserService {
      * @param name a name entered by the user.
      * @return false is the name is length less than 3, else true.
      */
-    public static boolean shortThanThree(String name) {
+    public static boolean longerThanThree(String name) {
         if (name.length() < 3) {
             return false;
         } else {
@@ -36,9 +36,10 @@ public class UserService {
     }
 
     /**
-     *
-     * @param name the user's name.
-     * @param email the user's email.
+     * This method calls the {@link #checkIfExists(String, String)} method to
+     * check if user is exists or no.
+     * @param name the entered user's name.
+     * @param email the entered user's email.
      * @return if user is exists return true else return false.
      */
     public static boolean checkIfExists(String name, String email) {
