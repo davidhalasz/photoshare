@@ -34,4 +34,15 @@ public class UserServiceTest {
         boolean result = UserService.shortThanThree(name);
         assertFalse(result);
     }
+
+    @Test
+    void nameAndEmailExists() {
+        User user = new User();
+        user.setName("mouse");
+        user.setEmail("mouse@email.com");
+
+
+
+
+    }
 }

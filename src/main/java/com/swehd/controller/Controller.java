@@ -1,6 +1,6 @@
 package com.swehd.controller;
 
-import com.swehd.App;
+import com.swehd.app.App;
 import com.swehd.post.Post;
 import com.swehd.post.PostDao;
 import com.swehd.user.User;
@@ -9,6 +9,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,6 +18,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +35,7 @@ import java.util.List;
 public class Controller {
     private User user;
     private PostDao postDao;
-
+    private static final double IMAGE_WIDTH = 350;
     /**
      * Get Current User.
      * @param user
@@ -52,32 +56,31 @@ public class Controller {
     @FXML
     private TableColumn<Post, String> editButton;
 
+    public static <T,U> void refreshTableView(TableView<T> tableView, List<TableColumn<T,U>> columns, List<T> rows) {
+        tableView.getColumns().clear();
+        tableView.getColumns().addAll(columns);
+
+        ObservableList<T> list = FXCollections.observableArrayList(rows);
+        tableView.setItems(list);
+    }
 
     /**
      * Display images in picture cell.
      * Show edit buttons in editButton cell.
      * After clicking show a dialog window with selected description to edit.
      */
-
     @FXML
     public void initialize() {
         postDao = PostDao.getInstance();
         List<Post> postList = postDao.findAllPost();
 
         picture.setCellValueFactory(new PropertyValueFactory<>("picture"));
-        description.setCellValueFactory(new PropertyValueFactory<>("description"));
         editButton.setCellValueFactory(new PropertyValueFactory<>("dummy"));
-
 
         picture.setCellFactory(column -> {
             TableCell<Post, String> cell = new TableCell<Post, String>() {
                 ImageView imageView = new ImageView();
 
-                /**
-                 * Show posted images.
-                 * @param item
-                 * @param empty
-                 */
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -86,10 +89,22 @@ public class Controller {
                         setText(null);
                         setGraphic(null);
                     } else {
-                        imageView.setFitHeight(150);
+                        VBox box = new VBox();
+                        Image img = new Image(getClass().getResource("/pictures/" + item).toExternalForm());
+                        imageView.setImage(img);
                         imageView.setPreserveRatio(true);
-                        imageView.setImage(new Image(getClass().getResource("/pictures/" + item).toExternalForm()));
-                        setGraphic(imageView);
+                        imageView.setFitWidth(IMAGE_WIDTH);
+                        imageView.setPreserveRatio(true);
+
+                        box.getChildren().add(imageView);
+
+                        Post post = getTableView().getItems().get(getIndex());
+                        Label labeledImage = new Label(post.getDescription() + "\nPosted by: " + post.getUser().getName());
+                        labeledImage.setFont(new Font("Arial", 15));
+                        box.setAlignment(Pos.TOP_CENTER);
+                        box.getChildren().add(labeledImage);
+                        box.setPadding(new Insets(10));
+                        setGraphic(box);
                     }
                 }
             };
@@ -100,12 +115,6 @@ public class Controller {
             TableCell<Post, String> cell = new TableCell<>() {
                 private Button btn = new Button("Edit");
 
-                /**
-                 * If User's id equal to post's user id, then show edit button.
-                 * Show an edit window after clicking edit button.
-                 * @param item
-                 * @param empty
-                 */
                 @Override
                 public void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
@@ -114,7 +123,6 @@ public class Controller {
                         setText(null);
                     } else {
                         btn.setOnAction(event -> {
-
                             try {
                                 Post post = getTableView().getItems().get(getIndex());
                                 FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("editwindow.fxml"));
@@ -144,11 +152,8 @@ public class Controller {
 
         ObservableList<Post> observableResult = FXCollections.observableArrayList();
         observableResult.addAll(postList);
-
         postWall.setItems(observableResult);
     }
-
-
 
     @FXML
     private Button choosePicBtn;
@@ -156,11 +161,10 @@ public class Controller {
     private Button sendPostBtn;
     @FXML
     private TextArea postDesc;
-    @FXML
-    private Label errorLabelPic;
 
     private String filename;
     private String path;
+    private boolean downloaded;
 
     public void initFile(String selectedFile) {
         this.filename = selectedFile;
@@ -171,8 +175,8 @@ public class Controller {
     }
 
     /**
-     * Returns a created post.
-     * @return
+     *
+     * @return the created post.
      */
     public Post createPost() {
         Post post = Post.builder()
@@ -186,8 +190,7 @@ public class Controller {
     /**
      * Get the selected picture's filename and description.
      * Save to database after clicking sendPostBtn.
-     * @param e
-     * @throws IOException
+     * @param e the selected button.
      */
     @FXML
     private void postForm(ActionEvent e) throws IOException {
@@ -209,7 +212,7 @@ public class Controller {
             if (postDesc.getText() != null && filename != null) {
                 postDao = PostDao.getInstance();
                 postDao.persist(createPost());
-                initialize();
+
                 log.info("User created a post and refreshed table.");
 
 
@@ -230,9 +233,7 @@ public class Controller {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-
-            } else {
-                errorLabelPic.setText("Please, choose a Picture!");
+                initialize();
             }
         }
     }

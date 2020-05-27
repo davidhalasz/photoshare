@@ -34,4 +34,18 @@ public class UserService {
             return true;
         }
     }
+
+    /**
+     *
+     * @param name the user's name.
+     * @param email the user's email.
+     * @return if user is exists return true else return false.
+     */
+    public static boolean checkIfExists(String name, String email) {
+        if (UserDao.getInstance().isExistUser(name, email) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

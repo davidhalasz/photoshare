@@ -15,6 +15,9 @@ import java.util.List;
 @Builder
 @Entity
 public class User {
+    /**
+     * User's id.
+     */
     @Id
     @GeneratedValue
     private long id;
@@ -23,7 +26,7 @@ public class User {
     private List<Post> posts;
 
     /**
-     * The name of the user
+     * The name of the user.
      */
     @Column(nullable = false)
     private String name;

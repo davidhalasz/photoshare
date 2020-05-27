@@ -39,4 +39,21 @@ public class UserDao extends GenericJpaDao<User> {
         }
     }
 
+    /**
+     * This method check if User is exists.
+     * @param name The user's name.
+     * @param email The email of user.
+     * @return The user or null.
+     */
+    public Optional<User> isExistUser(String name, String email) {
+        try {
+            return Optional.ofNullable(entityManager.createQuery("SELECT u FROM User u WHERE u.name = :name OR u.email = :email", User.class)
+                    .setParameter("name", name)
+                    .setParameter("email", email)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
 }

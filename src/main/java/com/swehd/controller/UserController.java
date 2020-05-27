@@ -1,6 +1,7 @@
 package com.swehd.controller;
 
-import com.swehd.App;
+import com.swehd.app.App;
+import com.swehd.app.MyApplication;
 import com.swehd.user.User;
 import com.swehd.user.UserDao;
 import javafx.event.ActionEvent;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static com.swehd.user.UserService.isValid;
 import static com.swehd.user.UserService.shortThanThree;
+import static com.swehd.user.UserService.checkIfExists;
 
 @Slf4j
 public class UserController {
@@ -68,14 +70,19 @@ public class UserController {
                         userDao.update(loggedUser);
                         log.info("User is logged.");
                         try {
+                            Stage loginwin = (Stage) loginButton.getScene().getWindow();
+
                             FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("mainwindow.fxml"));
                             Parent root = fxmlLoader.load();
                             fxmlLoader.<Controller>getController().initdata(user.get());
                             Stage stage = new Stage();
                             stage.setTitle("PhotoShare");
-                            stage.setScene(new Scene(root, 489, 710));
+                            stage.setScene(new Scene(root, 489, 910));
+                            stage.setResizable(false);
+                            stage.sizeToScene();
                             stage.show();
                             ((Node) e.getSource()).getScene().getWindow();
+                            loginwin.close();
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -84,7 +91,7 @@ public class UserController {
             }
 
         } else if (e.getSource().equals(switchToRegButton)) {
-            App.setRoot("registerwindow");
+            MyApplication.setRoot("registerwindow");
         }
     }
 
@@ -130,20 +137,24 @@ public class UserController {
                     errorLabel.setText("Password cannot be empty!");
                     throw new IllegalArgumentException("Password cannot be empty!");
                 }
-            } else if (shortThanThree(regName.getText())) {
+            } else if (!shortThanThree(regName.getText())) {
                 errorLabel.setText("Username is too short!");
                 throw new IllegalArgumentException("Username is too short!");
             } else if (isValid(regEmail.getText().trim())) {
+                if (checkIfExists(regName.getText(), regEmail.getText())){
+                    errorLabel.setText("This Username or Email is already use!");
+                } else {
                     userDao = UserDao.getInstance();
                     userDao.persist(createUser());
-                    App.setRoot("loginwindow");
-                    log.info("User ( {} ) registered.", regName.getText());
-                } else {
-                    errorLabel.setText("This is not a valid email address!");
-                    throw new IllegalArgumentException("Password cannot be empty!");
+                    MyApplication.setRoot("loginwindow");
+                    log.info("User ({}) registered.", regName.getText());
                 }
+            } else {
+                errorLabel.setText("This is not a valid email address!");
+                throw new IllegalArgumentException("Password cannot be empty!");
+            }
         } else if (e.getSource().equals(switchToLoginButton)) {
-            App.setRoot("loginwindow");
+            MyApplication.setRoot("loginwindow");
             log.info("Switch to Login Window");
         }
     }

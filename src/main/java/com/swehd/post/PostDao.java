@@ -30,7 +30,7 @@ public class PostDao extends GenericJpaDao<Post> {
      * @return all post.
      */
     public List<Post> findAllPost() {
-        return entityManager.createQuery("SELECT p FROM Post p", Post.class)
+        return entityManager.createQuery("SELECT p FROM Post p ORDER BY p.created DESC", Post.class)
                 .getResultList();
     }
 
